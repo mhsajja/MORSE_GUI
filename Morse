@@ -1,0 +1,41 @@
+from gpiozero import LED
+import RPi.GPIO
+RPi.GPIO.setmode(RPi.GPIO.BCM)
+from guizero import App , Text , TextBox , PushButton
+from time import sleep
+
+BLUE_LED=LED(18)
+
+#defining a dictionary of different alphabet's morse codes
+Dictionary_For_Morse = { ' ':'/', 'A':'.-', 'B':'-...', 'C':'-.-.', 'D':'-..', 'E':'.', 'F':'..-.', 'G':'--.', 'H':'....',
+                    'I':'..', 'J':'.---', 'K':'-.-', 'L':'.-..', 'M':'--', 'N':'-.','O':'---', 'P':'.--.', 'Q':'--.-',
+                    'R':'.-.', 'S':'...', 'T':'-','U':'..-', 'V':'...-', 'W':'.--','X':'-..-', 'Y':'-.--', 'Z':'--..', '1':'.----', '2':'..---', '3':'...--','4':'....-', '5':'.....', '6':'-....','7':'--...', '8':'---..', '9':'----.',
+                    '0':'-----', ', ':'--..--', '.':'.-.-.-','?':'..--..', '/':'-..-.', '-':'-....-','(':'-.--.', ')':'-.--.-'}
+
+def Convert_to_Morse():
+    text=name.value
+    txt = text[0:12] #setting the character length of upto 12 characters
+    code = [Dictionary_For_Morse[i.upper()] + ' ' for i in txt if i.upper() in Dictionary_For_Morse.keys()]
+    morse_code=''.join(code)
+    print(morse_code)
+    for dot_or_dash in morse_code:
+        if dot_or_dash=='.': #if dot is found then blink the light for one second
+            BLUE_LED.on()
+            sleep(1)
+            BLUE_LED.off()
+            sleep(1)
+            
+        elif dot_or_dash=='-': #if dash is found then blink the light for two second
+            BLUE_LED.on()
+            sleep(2)
+            BLUE_LED.off()
+            sleep(1)
+            
+        else:
+            sleep(1)
+            
+action = App(title = " Name into Morse Code Convertor", height = 500)
+intro = Text(action,text="Enter a word or your name to convert into Morse code (Only Upto 12 Characters) ")
+name= TextBox(action,width=12)
+txt=PushButton(action,command=Convert_to_Morse,text="Convert!")
+action.display()  
